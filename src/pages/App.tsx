@@ -1,14 +1,157 @@
-import { Flex, Text } from '@chakra-ui/react'
+import {
+  Button,
+  Flex,
+  Image,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
+  Text,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react'
+import { useState } from 'react'
+import { LineButton } from '../components/LineButton'
+import { PlayerBox } from '../components/PlayerBox'
+
+interface Player {
+  name: string
+  color: string
+}
 
 function App() {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const [newPlayer, setNewPlayer] = useState('')
+  const [players, setPlayers] = useState<Player[]>([])
+
+  const [count, setCount] = useState(0)
+
+  const choosePlayerColor = () => {
+    const colors = ['red', 'blue', 'yellow']
+
+    if (count === colors.length - 1) {
+      setCount(0)
+    } else {
+      setCount(count + 1)
+    }
+
+    return colors[count]
+  }
+
+  const handleAddPlayer = () => {
+    if (newPlayer !== '') {
+      setPlayers([...players, { name: newPlayer, color: choosePlayerColor() }])
+    }
+  }
+
+  const startGame = () => {
+    console.log('Começar jogo')
+  }
+
   return (
-    <Flex mx="auto" mt={4} align="center" flexDir="column">
-      <Text fontSize={32} color="white">
-        spyfall
+    <Flex mx="auto" align="center" justify="center" h="100vh" flexDir="column">
+      <Text fontSize={48} fontWeight="bold" color="purple.500">
+        espiãozinho
       </Text>
-      <Text color="purple.500" mt={2}>
-        coming soon...
-      </Text>
+
+      <LineButton text="Adicionar lugares +" mt={8} />
+
+      <LineButton text="Adicionar jogadores +" mt={4} onClick={onOpen} />
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent bgColor="purple.500" w="90vw">
+          <ModalCloseButton color="white" />
+          <ModalBody
+            display="flex"
+            flexDir="column"
+            alignItems="center"
+            w="100%"
+          >
+            <Text fontSize={24} fontWeight="bold" color="white" padding={4}>
+              Novo jogador +
+            </Text>
+            <Flex padding={4} align="center">
+              <Input
+                onChange={(e) => setNewPlayer(e.target.value)}
+                name="newPlayer"
+                placeholder="Digite o nome..."
+                variant="filled"
+                colorScheme="white"
+                focusBorderColor="white"
+                borderRadius={20}
+                _focus={{
+                  bgColor: 'white',
+                }}
+              />
+              <Image
+                src="assets/icons/done.svg"
+                alt="Done"
+                as="input"
+                type="image"
+                w="36px"
+                h="36px"
+                ml={2}
+                onClick={handleAddPlayer}
+                _hover={{
+                  cursor: 'pointer',
+                }}
+              />
+            </Flex>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <VStack
+        spacing={3}
+        py={4}
+        mt={8}
+        w="60%"
+        maxH="400px"
+        overflowY="auto"
+        maxW="390px"
+        bgColor="purple.500"
+        borderRadius={16}
+      >
+        {players.map((player) => (
+          <PlayerBox
+            key={player.name}
+            name={player.name}
+            color={player.color}
+          />
+        ))}
+        {players.length === 0 && (
+          <Text
+            padding={10}
+            color="white"
+            fontWeight="medium"
+            textAlign="center"
+          >
+            Nenhum jogador adicionado
+          </Text>
+        )}
+      </VStack>
+
+      <Button
+        onClick={startGame}
+        isDisabled={players.length < 3}
+        bgColor="purple.500"
+        color="white"
+        maxW="160px"
+        w="100%"
+        py={6}
+        borderRadius="16px"
+        mt={45}
+        transition="all 0.3s"
+        _hover={{
+          filter: 'brightness(110%)',
+        }}
+      >
+        JOGAR
+      </Button>
     </Flex>
   )
 }
