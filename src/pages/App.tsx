@@ -12,39 +12,18 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useContext } from 'react'
 import { LineButton } from '../components/LineButton'
 import { PlayerBox } from '../components/PlayerBox'
-
-interface Player {
-  name: string
-  color: string
-}
+import { PlayersContext } from '../contexts/PlayersContext'
 
 function App() {
+  const { players, setNewPlayer, handleAddPlayer } = useContext(PlayersContext)
+
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [newPlayer, setNewPlayer] = useState('')
-  const [players, setPlayers] = useState<Player[]>([])
-
-  const [count, setCount] = useState(0)
-
-  const choosePlayerColor = () => {
-    const colors = ['red', 'blue', 'yellow']
-
-    if (count === colors.length - 1) {
-      setCount(0)
-    } else {
-      setCount(count + 1)
-    }
-
-    return colors[count]
-  }
-
-  const handleAddPlayer = () => {
-    if (newPlayer !== '') {
-      setPlayers([...players, { name: newPlayer, color: choosePlayerColor() }])
-    }
+  const handleChangeNewPlayer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewPlayer(e.target.value)
   }
 
   const startGame = () => {
@@ -76,7 +55,7 @@ function App() {
             </Text>
             <Flex padding={4} align="center">
               <Input
-                onChange={(e) => setNewPlayer(e.target.value)}
+                onChange={handleChangeNewPlayer}
                 name="newPlayer"
                 placeholder="Digite o nome..."
                 variant="filled"
