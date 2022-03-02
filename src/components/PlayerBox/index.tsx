@@ -39,7 +39,7 @@ export function PlayerBox({ name, color }: PlayerBoxProps) {
         </Text>
       </Flex>
       <Image
-        onClick={(e) => handleRemovePlayer(name)}
+        onClick={() => handleRemovePlayer(name)}
         src="assets/icons/remove.svg"
         alt="Remove"
         _hover={{
