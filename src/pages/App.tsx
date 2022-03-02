@@ -27,10 +27,6 @@ function App() {
     setNewPlayer(e.target.value)
   }
 
-  const startGame = () => {
-    console.log('Começar jogo')
-  }
-
   return (
     <Flex mx="auto" align="center" justify="center" h="100vh" flexDir="column">
       <Text fontSize={48} fontWeight="bold" color="purple.500">
@@ -123,7 +119,6 @@ function App() {
         }}
       >
         <Button
-          onClick={startGame}
           isDisabled={players.length < 3}
           bgColor="purple.500"
           color="white"
