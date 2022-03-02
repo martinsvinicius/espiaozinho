@@ -1,4 +1,6 @@
 import { Flex, Image, Text } from '@chakra-ui/react'
+import { useContext } from 'react'
+import { PlayersContext } from '../../contexts/PlayersContext'
 
 interface PlayerBoxProps {
   name: string
@@ -6,6 +8,8 @@ interface PlayerBoxProps {
 }
 
 export function PlayerBox({ name, color }: PlayerBoxProps) {
+  const { handleRemovePlayer } = useContext(PlayersContext)
+
   const red =
     'invert(37%) sepia(98%) saturate(7489%) hue-rotate(356deg) brightness(107%) contrast(123%)'
   const blue =
@@ -26,10 +30,6 @@ export function PlayerBox({ name, color }: PlayerBoxProps) {
     }
   }
 
-  const removePlayer = () => {
-    console.log('removendo jogador')
-  }
-
   return (
     <Flex w="100%" justify="space-between" px={10} py={3}>
       <Flex>
@@ -39,7 +39,7 @@ export function PlayerBox({ name, color }: PlayerBoxProps) {
         </Text>
       </Flex>
       <Image
-        onClick={removePlayer}
+        onClick={(e) => handleRemovePlayer(name)}
         src="assets/icons/remove.svg"
         alt="Remove"
         _hover={{
