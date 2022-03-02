@@ -13,6 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 import { LineButton } from '../components/LineButton'
 import { PlayerBox } from '../components/PlayerBox'
 import { PlayersContext } from '../contexts/PlayersContext'
@@ -115,23 +116,29 @@ function App() {
         )}
       </VStack>
 
-      <Button
-        onClick={startGame}
-        isDisabled={players.length < 3}
-        bgColor="purple.500"
-        color="white"
-        maxW="160px"
-        w="100%"
-        py={6}
-        borderRadius="16px"
-        mt={45}
-        transition="all 0.3s"
-        _hover={{
-          filter: 'brightness(110%)',
+      <Link
+        to="/game"
+        style={{
+          marginTop: '45px',
         }}
       >
-        JOGAR
-      </Button>
+        <Button
+          onClick={startGame}
+          isDisabled={players.length < 3}
+          bgColor="purple.500"
+          color="white"
+          maxW="160px"
+          py={8}
+          px={14}
+          borderRadius="16px"
+          transition="all 0.3s"
+          _hover={{
+            filter: 'brightness(110%)',
+          }}
+        >
+          JOGAR
+        </Button>
+      </Link>
     </Flex>
   )
 }
