@@ -10,16 +10,16 @@ import { ContextProvider } from './contexts/PlayersContext'
 
 ReactDOM.render(
   <React.StrictMode>
-    <ContextProvider>
-      <ChakraProvider theme={theme}>
-        <BrowserRouter>
+    <BrowserRouter>
+      <ContextProvider>
+        <ChakraProvider theme={theme}>
           <Routes>
             <Route path="/" element={<App />} />
-            <Route path="game" element={<Game />} />
+            <Route path="/game" element={<Game />} />
           </Routes>
-        </BrowserRouter>
-      </ChakraProvider>
-    </ContextProvider>
+        </ChakraProvider>
+      </ContextProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 )
