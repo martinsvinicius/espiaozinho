@@ -62,6 +62,7 @@ function App() {
                 colorScheme="white"
                 focusBorderColor="white"
                 borderRadius={20}
+                autoFocus
                 _focus={{
                   bgColor: 'white',
                 }}
