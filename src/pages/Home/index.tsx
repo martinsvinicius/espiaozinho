@@ -12,27 +12,35 @@ export function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <Flex mx="auto" align="center" justify="center" h="100vh" flexDir="column">
+    <Flex
+      mx="auto"
+      align="center"
+      justify="center"
+      h="100vh"
+      flexDir="column"
+      w="100%"
+      px="2rem"
+      maxWidth="520px"
+    >
       <Text fontSize={48} fontWeight="bold" color="purple.500">
         espiãozinho
       </Text>
 
-      <LineButton text="Adicionar lugares +" mt={8} />
+      {/* <LineButton text="Adicionar lugares +" mt={8} /> */}
 
       <LineButton text="Adicionar jogadores +" mt={4} onClick={onOpen} />
 
       <VStack
         spacing={3}
-        py={4}
+        py={8}
         mt={8}
-        w="60%"
+        w="100%"
         maxH="400px"
         overflowY="auto"
-        maxW="390px"
         bgColor="purple.500"
         borderRadius={16}
       >
-        {players.map((player) => (
+        {players.map((player, index) => (
           <PlayerBox
             key={player.name}
             name={player.name}
@@ -59,8 +67,7 @@ export function Home() {
       >
         <Button
           isDisabled={players.length < 3}
-          bgColor="purple.500"
-          color="white"
+          colorScheme="green"
           maxW="160px"
           py={8}
           px={14}

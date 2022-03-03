@@ -14,7 +14,7 @@ export const theme = extendTheme({
     global: {
       body: {
         bgColor: 'black.300',
-        fontFamily: '"Roboto", sans-serif',
+        fontFamily: 'Roboto, sans-serif',
       },
     },
   },

@@ -1,6 +1,7 @@
-import { Flex, Image, Text } from '@chakra-ui/react'
+import { Button, Flex, Image, Text } from '@chakra-ui/react'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Timer } from '../../components/Timer'
 
 import { places } from '../../constants/places'
 import { PlayersContext } from '../../contexts/PlayersContext'
@@ -11,6 +12,8 @@ export function Game() {
   const { players } = useContext(PlayersContext)
 
   const canPlay = players.length >= 3
+  const [showStartGameButton, setShowStartGameButton] = useState(false)
+  const [gameStarted, setGameStarted] = useState(false)
 
   const [revealCount, setRevealCount] = useState(1)
   const [playerCount, setPlayerCount] = useState(0)
@@ -47,11 +50,15 @@ export function Game() {
         setMessage('Aperte para revelar')
         setImage('assets/icons/spy-question.svg')
       }
+    } else {
+      setShowStartGameButton(true)
     }
 
     setRevealCount(currentRevealCount)
     setPlayerCount(currentPlayerCount)
   }
+
+  const handleStartGame = () => setGameStarted(true)
 
   if (!canPlay) {
     return (
@@ -66,36 +73,59 @@ export function Game() {
     )
   }
 
-  return (
+  return gameStarted ? (
+    <Timer />
+  ) : (
     <Flex mx="auto" align="center" justify="center" h="100vh" flexDir="column">
-      <Text
-        fontSize={18}
-        fontWeight="medium"
-        color="purple.50"
-        w="60%"
-        textAlign="center"
-        mb={2}
-      >
-        {message}
-      </Text>
-      <Flex
-        as="button"
-        onClick={handleNextPlayer}
-        direction="column"
-        align="center"
-        bgColor="purple.500"
-        borderRadius={20}
-        px={20}
-        py={10}
-      >
-        <Text fontSize={36} color="white" fontWeight="bold" mb={5}>
-          {players[playerCount].name}
-        </Text>
-        <Image src={image} alt="Spy with a question mark" />
-        <Text fontSize={36} color="white" fontWeight="medium" mt={5}>
-          {role}
-        </Text>
-      </Flex>
+      {showStartGameButton ? (
+        <>
+          <Text fontSize={22} color="white">
+            Tudo pronto!
+          </Text>
+          <Button
+            borderRadius={20}
+            py={6}
+            px={10}
+            textTransform="uppercase"
+            colorScheme="green"
+            mt="2rem"
+            onClick={handleStartGame}
+          >
+            Começar Partida!
+          </Button>
+        </>
+      ) : (
+        <>
+          <Text
+            fontSize={22}
+            fontWeight="medium"
+            color="purple.50"
+            w="60%"
+            textAlign="center"
+            mb="1.5rem"
+          >
+            {message}
+          </Text>
+          <Flex
+            as="button"
+            onClick={handleNextPlayer}
+            direction="column"
+            align="center"
+            bgColor="purple.500"
+            borderRadius={20}
+            px={20}
+            py={10}
+          >
+            <Text fontSize={36} color="white" fontWeight="bold" mb={5}>
+              {players[playerCount].name}
+            </Text>
+            <Image src={image} alt="Spy with a question mark" />
+            <Text fontSize={36} color="white" fontWeight="medium" mt={5}>
+              {role}
+            </Text>
+          </Flex>
+        </>
+      )}
     </Flex>
   )
 }
