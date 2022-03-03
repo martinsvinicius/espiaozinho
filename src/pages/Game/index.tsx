@@ -1,43 +1,29 @@
 import { Flex, Image, Text } from '@chakra-ui/react'
-import { useContext, useEffect, useState } from 'react'
-import { PlayersContext } from '../contexts/PlayersContext'
+import { useContext, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-function Game() {
+import { places } from '../../constants/places'
+import { PlayersContext } from '../../contexts/PlayersContext'
+import { populateGameAndShuffle } from '../../utils/GameUtils'
+
+export function Game() {
+  const navigate = useNavigate()
   const { players } = useContext(PlayersContext)
 
-  const [game, setGame] = useState<string[]>([])
-
-  const populateGameAndShuffle = () => {
-    // populating game array
-    let newGame: string[] = []
-
-    for (let i = 0; i < players.length; i += 1) {
-      if (i < players.length - 1) {
-        newGame = [...newGame, 'Pizzaria']
-      } else {
-        newGame = [...newGame, 'Espião']
-      }
-    }
-
-    // shuffling game array
-    newGame = newGame
-      .map((value) => ({ value, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value)
-
-    setGame(newGame)
-  }
-
-  useEffect(() => {
-    populateGameAndShuffle()
-  }, [])
+  const canPlay = players.length >= 3
 
   const [revealCount, setRevealCount] = useState(1)
   const [playerCount, setPlayerCount] = useState(0)
 
-  const [role, setRole] = useState<string>('???')
-  const [image, setImage] = useState<string>('assets/icons/spy-question.svg')
-  const [message, setMessage] = useState<string>('Aperte para revelar')
+  const [role, setRole] = useState('???')
+  const [image, setImage] = useState('assets/icons/spy-question.svg')
+  const [message, setMessage] = useState('Aperte para revelar')
+
+  const game = useMemo(() => populateGameAndShuffle(places, players), [players])
+
+  useEffect(() => {
+    if (!canPlay) navigate('/')
+  }, [])
 
   const handleNextPlayer = () => {
     let currentRevealCount = revealCount
@@ -65,6 +51,19 @@ function Game() {
 
     setRevealCount(currentRevealCount)
     setPlayerCount(currentPlayerCount)
+  }
+
+  if (!canPlay) {
+    return (
+      <Text
+        fontSize={18}
+        fontWeight="bold"
+        color="purple.50"
+        textAlign="center"
+      >
+        Redirecionando...
+      </Text>
+    )
   }
 
   return (
@@ -100,5 +99,3 @@ function Game() {
     </Flex>
   )
 }
-
-export default Game

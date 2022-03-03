@@ -1,21 +1,19 @@
 import { createContext, ReactNode, useMemo, useState } from 'react'
+import { toast } from 'react-toastify'
+
 import { Player } from '../types/Player'
 
 interface PlayersContextData {
   players: Player[]
   setPlayers: (players: Player[]) => void
-  newPlayer: string
-  setNewPlayer: (newPlayer: string) => void
-  handleAddPlayer: () => void
+  handleAddPlayer: (newPlayer: string) => void
   handleRemovePlayer: (playerName: string) => void
 }
 
 export const PlayersContext = createContext({} as PlayersContextData)
 
 export function ContextProvider({ children }: { children: ReactNode }) {
-  const [newPlayer, setNewPlayer] = useState('')
   const [players, setPlayers] = useState<Player[]>([])
-
   const [count, setCount] = useState(0)
 
   const choosePlayerColor = () => {
@@ -30,7 +28,17 @@ export function ContextProvider({ children }: { children: ReactNode }) {
     return colors[count]
   }
 
-  const handleAddPlayer = () => {
+  const handleAddPlayer = (newPlayer: string) => {
+    const playerExists = players.find(({ name }) => name === newPlayer)
+
+    if (playerExists) {
+      toast(`${newPlayer} já está na lista!`, {
+        type: 'warning',
+      })
+
+      return
+    }
+
     if (newPlayer !== '') {
       setPlayers([...players, { name: newPlayer, color: choosePlayerColor() }])
     }
@@ -44,12 +52,10 @@ export function ContextProvider({ children }: { children: ReactNode }) {
     () => ({
       players,
       setPlayers,
-      newPlayer,
-      setNewPlayer,
       handleAddPlayer,
       handleRemovePlayer,
     }),
-    [players, newPlayer]
+    [players]
   )
 
   return (
