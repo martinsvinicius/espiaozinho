@@ -9,7 +9,9 @@ import { populateGameAndShuffle } from '../../utils/GameUtils'
 
 export function Game() {
   const navigate = useNavigate()
-  const { players } = useContext(PlayersContext)
+  const { players, createdPlaces } = useContext(PlayersContext)
+
+  const playablePlaces = [...places, ...createdPlaces]
 
   const canPlay = players.length >= 3
   const [showStartGameButton, setShowStartGameButton] = useState(false)
@@ -22,7 +24,10 @@ export function Game() {
   const [image, setImage] = useState('assets/icons/spy-question.svg')
   const [message, setMessage] = useState('Aperte para revelar')
 
-  const game = useMemo(() => populateGameAndShuffle(places, players), [players])
+  const game = useMemo(
+    () => populateGameAndShuffle(playablePlaces, players),
+    [players]
+  )
 
   useEffect(() => {
     if (!canPlay) navigate('/')
