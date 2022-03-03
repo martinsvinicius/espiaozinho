@@ -1,10 +1,16 @@
 import { Text, Flex, Button, Progress } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { PlayersContext } from '../../contexts/PlayersContext'
 
 export function Timer() {
   const navigate = useNavigate()
-  const [minutes, setMinutes] = useState(15)
+
+  const { timer } = useContext(PlayersContext)
+
+  const initialTimer = timer
+
+  const [minutes, setMinutes] = useState(initialTimer)
   const [seconds, setSeconds] = useState(0)
   const [timedOutColor, setTimedOutColor] = useState<'red.500' | 'purple.500'>(
     'purple.500'
@@ -39,7 +45,8 @@ export function Timer() {
 
   const onGameOver = () => navigate('/')
 
-  const progressPercents = ((minutes * 60 + seconds) / (15 * 60)) * 100
+  const progressPercents =
+    ((minutes * 60 + seconds) / (initialTimer * 60)) * 100
 
   return (
     <Flex

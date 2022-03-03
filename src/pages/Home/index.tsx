@@ -1,15 +1,33 @@
-import { Button, Flex, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import {
+  Button,
+  Flex,
+  Image,
+  Text,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react'
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
 import { AddPlayerModal } from '../../components/AddPlayerModal'
 import { LineButton } from '../../components/LineButton'
 import { PlayerBox } from '../../components/PlayerBox'
+import { SettingsModal } from '../../components/SettingsModal'
 import { PlayersContext } from '../../contexts/PlayersContext'
 
 export function Home() {
   const { players } = useContext(PlayersContext)
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isAddPlayerModalOpen,
+    onOpen: onOpenAddPlayerModal,
+    onClose: onCloseAddPlayerModal,
+  } = useDisclosure()
+
+  const {
+    isOpen: isSettingsModalOpen,
+    onOpen: onOpenSettingsModal,
+    onClose: onCloseSettingsModal,
+  } = useDisclosure()
 
   return (
     <Flex
@@ -22,13 +40,27 @@ export function Home() {
       px="2rem"
       maxWidth="520px"
     >
+      <Image
+        src="assets/icons/settings.svg"
+        alt="Settings"
+        position="fixed"
+        top="30"
+        right="30"
+        cursor="pointer"
+        onClick={onOpenSettingsModal}
+      />
+
       <Text fontSize={48} fontWeight="bold" color="purple.500">
         espiãozinho
       </Text>
 
       {/* <LineButton text="Adicionar lugares +" mt={8} /> */}
 
-      <LineButton text="Adicionar jogadores +" mt={4} onClick={onOpen} />
+      <LineButton
+        text="Adicionar jogadores +"
+        mt={4}
+        onClick={onOpenAddPlayerModal}
+      />
 
       <VStack
         spacing={3}
@@ -81,7 +113,14 @@ export function Home() {
         </Button>
       </Link>
 
-      <AddPlayerModal isOpen={isOpen} onClose={onClose} />
+      <AddPlayerModal
+        isOpen={isAddPlayerModalOpen}
+        onClose={onCloseAddPlayerModal}
+      />
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={onCloseSettingsModal}
+      />
     </Flex>
   )
 }

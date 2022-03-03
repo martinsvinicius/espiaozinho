@@ -8,11 +8,17 @@ interface PlayersContextData {
   setPlayers: (players: Player[]) => void
   handleAddPlayer: (newPlayer: string) => void
   handleRemovePlayer: (playerName: string) => void
+  createdPlaces: string[]
+  handleAddPlace: (place: string) => void
+  timer: number
+  handleChangeTimer: (isAdding: boolean) => void
 }
 
 export const PlayersContext = createContext({} as PlayersContextData)
 
 export function ContextProvider({ children }: { children: ReactNode }) {
+  const [createdPlaces, setCreatedPlaces] = useState<string[]>([])
+  const [timer, setTimer] = useState<number>(15)
   const [players, setPlayers] = useState<Player[]>([])
   const [count, setCount] = useState(0)
 
@@ -48,14 +54,30 @@ export function ContextProvider({ children }: { children: ReactNode }) {
     setPlayers(players.filter((p) => p.name !== playerName))
   }
 
+  const handleAddPlace = (place: string) => {
+    setCreatedPlaces([...createdPlaces, place])
+  }
+
+  const handleChangeTimer = (isAdding: boolean) => {
+    if (isAdding) {
+      setTimer(timer + 1)
+    } else {
+      setTimer(timer - 1)
+    }
+  }
+
   const contextProviderValue = useMemo(
     () => ({
       players,
       setPlayers,
       handleAddPlayer,
       handleRemovePlayer,
+      createdPlaces,
+      handleAddPlace,
+      timer,
+      handleChangeTimer,
     }),
-    [players]
+    [players, createdPlaces, timer]
   )
 
   return (
