@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useMemo, useState } from 'react'
+import { createContext, ReactNode, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { Player } from '../types/Player'
@@ -18,10 +18,20 @@ interface PlayersContextData {
 export const PlayersContext = createContext({} as PlayersContextData)
 
 export function ContextProvider({ children }: { children: ReactNode }) {
-  const [createdPlaces, setCreatedPlaces] = useState<string[]>([])
+  const [createdPlaces, setCreatedPlaces] = useState<string[]>(() => {
+    const places = localStorage.getItem('espiaozinho@createdPlaces')
+    return places ? JSON.parse(places) : []
+  })
   const [timer, setTimer] = useState<number>(15)
   const [players, setPlayers] = useState<Player[]>([])
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    localStorage.setItem(
+      'espiaozinho@createdPlaces',
+      JSON.stringify(createdPlaces)
+    )
+  }, [createdPlaces])
 
   const choosePlayerColor = () => {
     const colors = ['red', 'blue', 'yellow']
