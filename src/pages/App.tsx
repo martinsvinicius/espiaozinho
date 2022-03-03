@@ -1,16 +1,22 @@
-import { Flex, Text } from '@chakra-ui/react'
+import { BrowserRouter } from 'react-router-dom'
+import { ChakraProvider } from '@chakra-ui/react'
+import { ToastContainer } from 'react-toastify'
 
-function App() {
+import 'react-toastify/dist/ReactToastify.css'
+
+import { ContextProvider } from '../contexts/PlayersContext'
+import { AppRoutes } from '../routes/index.routes'
+import { theme } from '../theme'
+
+export default function App() {
   return (
-    <Flex mx="auto" mt={4} align="center" flexDir="column">
-      <Text fontSize={32} color="white">
-        spyfall
-      </Text>
-      <Text color="purple.500" mt={2}>
-        coming soon...
-      </Text>
-    </Flex>
+    <BrowserRouter>
+      <ContextProvider>
+        <ChakraProvider theme={theme}>
+          <AppRoutes />
+          <ToastContainer theme="colored" />
+        </ChakraProvider>
+      </ContextProvider>
+    </BrowserRouter>
   )
 }
-
-export default App
