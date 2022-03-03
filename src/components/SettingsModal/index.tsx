@@ -12,6 +12,7 @@ import {
 import { FormEvent, useContext, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { PlayersContext } from '../../contexts/PlayersContext'
+import { PlaceTag } from '../PlaceTag'
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -19,8 +20,13 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
-  const { handleAddPlace, timer, handleChangeTimer } =
-    useContext(PlayersContext)
+  const {
+    createdPlaces,
+    handleAddPlace,
+    handleRemovePlace,
+    timer,
+    handleChangeTimer,
+  } = useContext(PlayersContext)
   const newPlace = useRef<HTMLInputElement>(null)
 
   const onAddPlace = (e?: FormEvent) => {
@@ -105,6 +111,16 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 cursor: 'pointer',
               }}
             />
+          </Flex>
+
+          <Flex maxW="90%" flexWrap="wrap" justify="center">
+            {createdPlaces.map((place) => (
+              <PlaceTag
+                key={place}
+                place={place}
+                onClick={() => handleRemovePlace(place)}
+              />
+            ))}
           </Flex>
 
           <Text fontSize={24} fontWeight="bold" color="white" padding={4}>

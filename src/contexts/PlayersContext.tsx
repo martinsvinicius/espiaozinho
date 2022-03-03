@@ -9,7 +9,8 @@ interface PlayersContextData {
   handleAddPlayer: (newPlayer: string) => void
   handleRemovePlayer: (playerName: string) => void
   createdPlaces: string[]
-  handleAddPlace: (place: string) => void
+  handleAddPlace: (newPlace: string) => void
+  handleRemovePlace: (place: string) => void
   timer: number
   handleChangeTimer: (isAdding: boolean) => void
 }
@@ -54,8 +55,21 @@ export function ContextProvider({ children }: { children: ReactNode }) {
     setPlayers(players.filter((p) => p.name !== playerName))
   }
 
-  const handleAddPlace = (place: string) => {
-    setCreatedPlaces([...createdPlaces, place])
+  const handleAddPlace = (newPlace: string) => {
+    const placeExists = createdPlaces.find((place) => place === newPlace)
+
+    if (placeExists) {
+      toast(`${newPlace} já está na lista!`, {
+        type: 'warning',
+      })
+      return
+    }
+
+    setCreatedPlaces([...createdPlaces, newPlace])
+  }
+
+  const handleRemovePlace = (place: string) => {
+    setCreatedPlaces(createdPlaces.filter((p) => p !== place))
   }
 
   const handleChangeTimer = (isAdding: boolean) => {
@@ -74,6 +88,7 @@ export function ContextProvider({ children }: { children: ReactNode }) {
       handleRemovePlayer,
       createdPlaces,
       handleAddPlace,
+      handleRemovePlace,
       timer,
       handleChangeTimer,
     }),
