@@ -40,7 +40,7 @@ export function Home() {
         bgColor="purple.500"
         borderRadius={16}
       >
-        {players.map((player, index) => (
+        {players.map((player) => (
           <PlayerBox
             key={player.name}
             name={player.name}
