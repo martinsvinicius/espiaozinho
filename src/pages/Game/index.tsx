@@ -1,15 +1,17 @@
+/* eslint-disable no-shadow */
 import { Button, Flex, Image, Text } from '@chakra-ui/react'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Timer } from '../../components/Timer'
 
 import { places } from '../../constants/places'
-import { PlayersContext } from '../../contexts/PlayersContext'
+import { SettingsContext } from '../../contexts/SettingsContext'
 import { populateGameAndShuffle } from '../../utils/GameUtils'
 
 export function Game() {
   const navigate = useNavigate()
-  const { players, createdPlaces } = useContext(PlayersContext)
+  const { players, spiesQuantity, createdPlaces, spiesShouldKnowEachOther } =
+    useContext(SettingsContext)
 
   const playablePlaces = [...places, ...createdPlaces]
 
@@ -24,9 +26,19 @@ export function Game() {
   const [image, setImage] = useState('assets/icons/spy-question.svg')
   const [message, setMessage] = useState('Aperte para revelar')
 
-  const game = useMemo(
-    () => populateGameAndShuffle(playablePlaces, players),
-    [players]
+  const { game, spies } = useMemo(() => {
+    const game = populateGameAndShuffle(playablePlaces, players, spiesQuantity)
+    const spies = players.filter((_, i) => game[i] === 'Espião')
+    return { game, spies }
+  }, [players, spiesQuantity])
+
+  const isSpiesVisible = useMemo(
+    () =>
+      role === 'Espião' &&
+      revealCount % 2 === 0 &&
+      spies.length >= 2 &&
+      spiesShouldKnowEachOther,
+    [role, revealCount, spies, spiesShouldKnowEachOther]
   )
 
   useEffect(() => {
@@ -129,6 +141,20 @@ export function Game() {
               {role}
             </Text>
           </Flex>
+
+          {isSpiesVisible && (
+            <Text fontSize={18} color="gray" fontWeight="medium" mt={5}>
+              {`${
+                spies.length - 1 === 1
+                  ? 'O outro espião é'
+                  : 'Os outros espiões são'
+              }
+              ${spies
+                .filter((spy) => spy.name !== players[playerCount].name)
+                .map((spy) => spy.name)
+                .join(', ')}`}
+            </Text>
+          )}
         </>
       )}
     </Flex>

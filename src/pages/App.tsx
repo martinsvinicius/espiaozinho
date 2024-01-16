@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css'
 
-import { ContextProvider } from '../contexts/PlayersContext'
+import { ContextProvider } from '../contexts/SettingsContext'
 import { AppRoutes } from '../routes/index.routes'
 import { theme } from '../theme'
 

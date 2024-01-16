@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { FormEvent, useContext, useRef } from 'react'
 import { toast } from 'react-toastify'
-import { PlayersContext } from '../../contexts/PlayersContext'
+import { SettingsContext } from '../../contexts/SettingsContext'
 
 interface AddPlayerModalProps {
   isOpen: boolean
@@ -19,7 +19,7 @@ interface AddPlayerModalProps {
 }
 
 export function AddPlayerModal({ isOpen, onClose }: AddPlayerModalProps) {
-  const { handleAddPlayer } = useContext(PlayersContext)
+  const { handleAddPlayer } = useContext(SettingsContext)
   const newPlayer = useRef<HTMLInputElement>(null)
 
   const onAddPlayer = (e?: FormEvent) => {
