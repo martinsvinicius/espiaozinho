@@ -1,12 +1,12 @@
 import { Text, Flex, Button, Progress } from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlayersContext } from '../../contexts/PlayersContext'
+import { SettingsContext } from '../../contexts/SettingsContext'
 
 export function Timer() {
   const navigate = useNavigate()
 
-  const { timer } = useContext(PlayersContext)
+  const { timer } = useContext(SettingsContext)
 
   const initialTimer = timer
 

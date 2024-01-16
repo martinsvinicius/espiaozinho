@@ -13,10 +13,10 @@ import { AddPlayerModal } from '../../components/AddPlayerModal'
 import { LineButton } from '../../components/LineButton'
 import { PlayerBox } from '../../components/PlayerBox'
 import { SettingsModal } from '../../components/SettingsModal'
-import { PlayersContext } from '../../contexts/PlayersContext'
+import { SettingsContext } from '../../contexts/SettingsContext'
 
 export function Home() {
-  const { players } = useContext(PlayersContext)
+  const { players } = useContext(SettingsContext)
   const {
     isOpen: isAddPlayerModalOpen,
     onOpen: onOpenAddPlayerModal,
@@ -53,8 +53,6 @@ export function Home() {
       <Text fontSize={48} fontWeight="bold" color="purple.500">
         espiãozinho
       </Text>
-
-      {/* <LineButton text="Adicionar lugares +" mt={8} /> */}
 
       <LineButton
         text="Adicionar jogadores +"

@@ -8,10 +8,11 @@ import {
   ModalOverlay,
   Text,
   Flex,
+  Checkbox,
 } from '@chakra-ui/react'
 import { FormEvent, useContext, useRef } from 'react'
 import { toast } from 'react-toastify'
-import { PlayersContext } from '../../contexts/PlayersContext'
+import { SettingsContext } from '../../contexts/SettingsContext'
 import { PlaceTag } from '../PlaceTag'
 
 interface SettingsModalProps {
@@ -26,7 +27,12 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     handleRemovePlace,
     timer,
     handleChangeTimer,
-  } = useContext(PlayersContext)
+    spiesQuantity,
+    handleChangeSpiesQuantity,
+    spiesShouldKnowEachOther,
+    setSpiesShouldKnowEachOther,
+  } = useContext(SettingsContext)
+
   const newPlace = useRef<HTMLInputElement>(null)
 
   const onAddPlace = (e?: FormEvent) => {
@@ -72,13 +78,66 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     }
   }
 
+  const onChangeSpiesShouldKnowEachOtherOption = () => {
+    setSpiesShouldKnowEachOther((prev) => !prev)
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bgColor="purple.500" w="90vw">
         <ModalCloseButton color="white" />
         <ModalBody display="flex" flexDir="column" alignItems="center" w="100%">
-          <Text fontSize={24} fontWeight="bold" color="white" padding={4}>
+          <Text
+            fontSize={24}
+            fontWeight="bold"
+            color="white"
+            padding={4}
+            textAlign="center"
+          >
+            Definir quantidade de espiões
+          </Text>
+          <Flex padding={4} align="center">
+            <Image
+              src="assets/icons/red-remove.svg"
+              alt="Remove"
+              cursor="pointer"
+              onClick={() => handleChangeSpiesQuantity(false)}
+            />
+            <Flex as="form" mx={5}>
+              <Input
+                name="spiesQuantity"
+                variant="filled"
+                colorScheme="white"
+                focusBorderColor="white"
+                borderRadius={20}
+                autoFocus
+                _focus={{
+                  bgColor: 'white',
+                }}
+                value={spiesQuantity}
+                autoComplete="off"
+                type="number"
+                maxW="100px"
+                textAlign="center"
+                readOnly
+              />
+            </Flex>
+            <Image
+              src="assets/icons/green-add.svg"
+              alt="Add"
+              cursor="pointer"
+              onClick={() => handleChangeSpiesQuantity(true)}
+            />
+          </Flex>
+
+          <Text
+            fontSize={24}
+            fontWeight="bold"
+            color="white"
+            padding={4}
+            textAlign="center"
+          >
             Adicionar lugares +
           </Text>
           <Flex padding={4} align="center">
@@ -123,7 +182,13 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             ))}
           </Flex>
 
-          <Text fontSize={24} fontWeight="bold" color="white" padding={4}>
+          <Text
+            fontSize={24}
+            fontWeight="bold"
+            color="white"
+            padding={4}
+            textAlign="center"
+          >
             Definir tempo de jogo
           </Text>
           <Flex padding={4} align="center">
@@ -158,6 +223,27 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               cursor="pointer"
               onClick={() => onChangeTimer(true)}
             />
+          </Flex>
+
+          <Text
+            fontSize={24}
+            fontWeight="bold"
+            color="white"
+            padding={4}
+            textAlign="center"
+          >
+            Outros
+          </Text>
+          <Flex padding={4} align="center">
+            <Checkbox
+              disabled={spiesQuantity <= 1}
+              defaultChecked={spiesShouldKnowEachOther}
+              onChange={onChangeSpiesShouldKnowEachOtherOption}
+              color="white"
+              fontWeight="bold"
+            >
+              Espiões se conhecem
+            </Checkbox>
           </Flex>
         </ModalBody>
       </ModalContent>

@@ -3,9 +3,8 @@ import { toast } from 'react-toastify'
 
 import { Player } from '../types/Player'
 
-interface PlayersContextData {
+interface SettingsContextData {
   players: Player[]
-  setPlayers: (players: Player[]) => void
   handleAddPlayer: (newPlayer: string) => void
   handleRemovePlayer: (playerName: string) => void
   createdPlaces: string[]
@@ -13,18 +12,26 @@ interface PlayersContextData {
   handleRemovePlace: (place: string) => void
   timer: number
   handleChangeTimer: (isAdding: boolean) => void
+  spiesQuantity: number
+  handleChangeSpiesQuantity: (isAdding: boolean) => void
+  spiesShouldKnowEachOther: boolean
+  setSpiesShouldKnowEachOther: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const PlayersContext = createContext({} as PlayersContextData)
+export const SettingsContext = createContext({} as SettingsContextData)
 
 export function ContextProvider({ children }: { children: ReactNode }) {
   const [createdPlaces, setCreatedPlaces] = useState<string[]>(() => {
     const places = localStorage.getItem('espiaozinho@createdPlaces')
     return places ? JSON.parse(places) : []
   })
+  const [spiesQuantity, setSpiesQuantity] = useState(1)
   const [timer, setTimer] = useState<number>(15)
   const [players, setPlayers] = useState<Player[]>([])
   const [count, setCount] = useState(0)
+
+  const [spiesShouldKnowEachOther, setSpiesShouldKnowEachOther] =
+    useState(false)
 
   useEffect(() => {
     localStorage.setItem(
@@ -43,6 +50,29 @@ export function ContextProvider({ children }: { children: ReactNode }) {
     }
 
     return colors[count]
+  }
+
+  // eslint-disable-next-line consistent-return
+  const handleChangeSpiesQuantity = (isAdding: boolean) => {
+    if (players.length < 3)
+      return toast(
+        'É necessário haver pelo menos 3 jogadores antes de definir a quantidade de espiões!',
+        { type: 'warning' }
+      )
+
+    if (isAdding) {
+      if (spiesQuantity >= players.length - 1) {
+        return toast('Número máximo de espiões!', { type: 'warning' })
+      }
+
+      return setSpiesQuantity((prev) => prev + 1)
+    }
+
+    if (spiesQuantity !== 1) {
+      return setSpiesQuantity((prev) => prev - 1)
+    }
+
+    toast('É necessário haver pelo menos um espião!', { type: 'warning' })
   }
 
   const handleAddPlayer = (newPlayer: string) => {
@@ -101,13 +131,17 @@ export function ContextProvider({ children }: { children: ReactNode }) {
       handleRemovePlace,
       timer,
       handleChangeTimer,
+      spiesQuantity,
+      handleChangeSpiesQuantity,
+      spiesShouldKnowEachOther,
+      setSpiesShouldKnowEachOther,
     }),
-    [players, createdPlaces, timer]
+    [players, createdPlaces, timer, spiesQuantity, spiesShouldKnowEachOther]
   )
 
   return (
-    <PlayersContext.Provider value={contextProviderValue}>
+    <SettingsContext.Provider value={contextProviderValue}>
       {children}
-    </PlayersContext.Provider>
+    </SettingsContext.Provider>
   )
 }
