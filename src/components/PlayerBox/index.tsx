@@ -1,15 +1,33 @@
 import { Flex, Image, Text } from '@chakra-ui/react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { useContext } from 'react'
 import { SettingsContext } from '../../contexts/SettingsContext'
 
 interface PlayerBoxProps {
+  id: string
   name: string
   color: string
 }
 
-export function PlayerBox({ name, color }: PlayerBoxProps) {
+export function PlayerBox({ id, name, color }: PlayerBoxProps) {
   const { handleRemovePlayer, handleChangeSpiesQuantity } =
     useContext(SettingsContext)
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
 
   const red =
     'invert(37%) sepia(98%) saturate(7489%) hue-rotate(356deg) brightness(107%) contrast(123%)'
@@ -37,8 +55,24 @@ export function PlayerBox({ name, color }: PlayerBoxProps) {
   }
 
   return (
-    <Flex w="100%" justify="space-between" px={10} py={3}>
-      <Flex>
+    <Flex
+      ref={setNodeRef}
+      style={style}
+      w="100%"
+      justify="space-between"
+      px={10}
+      py={3}
+      bg={isDragging ? 'purple.600' : 'transparent'}
+      borderRadius={8}
+    >
+      <Flex
+        {...attributes}
+        {...listeners}
+        cursor="grab"
+        _active={{ cursor: 'grabbing' }}
+        align="center"
+        flex={1}
+      >
         <Image src="assets/icons/spy.svg" alt="Spy" filter={imageColor()} />
         <Text color="white" fontSize={18} fontWeight="medium" ml={4}>
           {name}
