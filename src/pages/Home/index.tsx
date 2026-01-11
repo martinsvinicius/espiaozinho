@@ -6,6 +6,20 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react'
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -16,7 +30,24 @@ import { SettingsModal } from '../../components/SettingsModal'
 import { SettingsContext } from '../../contexts/SettingsContext'
 
 export function Home() {
-  const { players } = useContext(SettingsContext)
+  const { players, handleReorderPlayers } = useContext(SettingsContext)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (over && active.id !== over.id) {
+      const oldIndex = players.findIndex((p) => p.name === active.id)
+      const newIndex = players.findIndex((p) => p.name === over.id)
+      handleReorderPlayers(oldIndex, newIndex)
+    }
+  }
   const {
     isOpen: isAddPlayerModalOpen,
     onOpen: onOpenAddPlayerModal,
@@ -70,13 +101,25 @@ export function Home() {
         bgColor="purple.500"
         borderRadius={16}
       >
-        {players.map((player) => (
-          <PlayerBox
-            key={player.name}
-            name={player.name}
-            color={player.color}
-          />
-        ))}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={players.map((p) => p.name)}
+            strategy={verticalListSortingStrategy}
+          >
+            {players.map((player) => (
+              <PlayerBox
+                key={player.name}
+                id={player.name}
+                name={player.name}
+                color={player.color}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
         {players.length === 0 && (
           <Text
             padding={10}

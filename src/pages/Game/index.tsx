@@ -4,16 +4,21 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Timer } from '../../components/Timer'
 
-import { places } from '../../constants/places'
 import { SettingsContext } from '../../contexts/SettingsContext'
 import { populateGameAndShuffle } from '../../utils/GameUtils'
 
 export function Game() {
   const navigate = useNavigate()
-  const { players, spiesQuantity, createdPlaces, spiesShouldKnowEachOther } =
-    useContext(SettingsContext)
+  const {
+    players,
+    spiesQuantity,
+    createdPlaces,
+    spiesShouldKnowEachOther,
+    getThemeItems,
+  } = useContext(SettingsContext)
 
-  const playablePlaces = [...places, ...createdPlaces]
+  const themeItems = getThemeItems()
+  const playablePlaces = [...themeItems, ...createdPlaces]
 
   const canPlay = players.length >= 3
   const [showStartGameButton, setShowStartGameButton] = useState(false)
@@ -26,10 +31,11 @@ export function Game() {
   const [image, setImage] = useState('assets/icons/spy-question.svg')
   const [message, setMessage] = useState('Aperte para revelar')
 
-  const { game, spies } = useMemo(() => {
+  const { game, spies, startingPlayer } = useMemo(() => {
     const game = populateGameAndShuffle(playablePlaces, players, spiesQuantity)
     const spies = players.filter((_, i) => game[i] === 'Espião')
-    return { game, spies }
+    const startingPlayer = players[Math.floor(Math.random() * players.length)]
+    return { game, spies, startingPlayer }
   }, [players, spiesQuantity])
 
   const isSpiesVisible = useMemo(
@@ -98,6 +104,9 @@ export function Game() {
         <>
           <Text fontSize={22} color="white">
             Tudo pronto!
+          </Text>
+          <Text fontSize={18} color="purple.200" mt={4}>
+            Primeiro a jogar: {startingPlayer.name}
           </Text>
           <Button
             borderRadius={20}

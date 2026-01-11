@@ -9,9 +9,12 @@ import {
   Text,
   Flex,
   Checkbox,
+  Button,
+  SimpleGrid,
 } from '@chakra-ui/react'
 import { FormEvent, useContext, useRef } from 'react'
 import { toast } from 'react-toastify'
+import { themes } from '../../constants/themes'
 import { SettingsContext } from '../../contexts/SettingsContext'
 import { PlaceTag } from '../PlaceTag'
 
@@ -31,6 +34,9 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     handleChangeSpiesQuantity,
     spiesShouldKnowEachOther,
     setSpiesShouldKnowEachOther,
+    selectedThemeId,
+    selectedThemeName,
+    handleChangeTheme,
   } = useContext(SettingsContext)
 
   const newPlace = useRef<HTMLInputElement>(null)
@@ -43,16 +49,19 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       !newPlace.current.value ||
       newPlace.current.value === ''
     ) {
-      toast('Lugar não informado', {
+      toast('Item não informado', {
         type: 'error',
       })
       return
     }
 
     handleAddPlace(newPlace.current.value)
-    toast(`Novo lugar (${newPlace.current.value}) adicionado!`, {
-      type: 'success',
-    })
+    toast(
+      `Novo item (${newPlace.current.value}) adicionado a ${selectedThemeName}!`,
+      {
+        type: 'success',
+      }
+    )
     newPlace.current.value = ''
   }
 
@@ -88,6 +97,35 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       <ModalContent bgColor="purple.500" w="90vw">
         <ModalCloseButton color="white" />
         <ModalBody display="flex" flexDir="column" alignItems="center" w="100%">
+          <Text
+            fontSize={24}
+            fontWeight="bold"
+            color="white"
+            padding={4}
+            textAlign="center"
+          >
+            Escolher tema
+          </Text>
+          <SimpleGrid columns={2} spacing={3} mb={4}>
+            {themes.map((theme) => (
+              <Button
+                key={theme.id}
+                size="sm"
+                borderRadius={20}
+                colorScheme={selectedThemeId === theme.id ? 'green' : 'purple'}
+                variant={selectedThemeId === theme.id ? 'solid' : 'outline'}
+                onClick={() => handleChangeTheme(theme.id)}
+                color={selectedThemeId === theme.id ? 'white' : 'purple.100'}
+                borderColor="purple.300"
+                _hover={{
+                  bg: selectedThemeId === theme.id ? 'green.500' : 'purple.600',
+                }}
+              >
+                {theme.name}
+              </Button>
+            ))}
+          </SimpleGrid>
+
           <Text
             fontSize={24}
             fontWeight="bold"
@@ -138,13 +176,13 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             padding={4}
             textAlign="center"
           >
-            Adicionar lugares +
+            Adicionar a {selectedThemeName} +
           </Text>
           <Flex padding={4} align="center">
             <Flex as="form" onSubmit={onAddPlace}>
               <Input
                 name="newPlace"
-                placeholder="Digite o lugar..."
+                placeholder="Digite o item..."
                 variant="filled"
                 colorScheme="white"
                 focusBorderColor="white"
